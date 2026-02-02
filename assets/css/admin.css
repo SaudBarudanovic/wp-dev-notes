@@ -1,0 +1,1837 @@
+/**
+ * Dev Notes Admin Styles
+ * Modern, clean design with proper dark mode support
+ */
+
+/* ========================================
+   CSS Variables - Light Mode (Default)
+   ======================================== */
+:root {
+    /* Primary colors */
+    --dn-primary: #3b82f6;
+    --dn-primary-hover: #2563eb;
+    --dn-primary-light: #dbeafe;
+    --dn-primary-dark: #1d4ed8;
+
+    /* Status colors */
+    --dn-success: #10b981;
+    --dn-success-bg: #d1fae5;
+    --dn-error: #ef4444;
+    --dn-error-bg: #fee2e2;
+    --dn-warning: #f59e0b;
+    --dn-warning-bg: #fef3c7;
+    --dn-info: #6366f1;
+    --dn-info-bg: #e0e7ff;
+
+    /* Neutral colors */
+    --dn-bg-primary: #ffffff;
+    --dn-bg-secondary: #f8fafc;
+    --dn-bg-tertiary: #f1f5f9;
+    --dn-bg-hover: #e2e8f0;
+
+    /* Text colors */
+    --dn-text-primary: #0f172a;
+    --dn-text-secondary: #475569;
+    --dn-text-muted: #94a3b8;
+    --dn-text-inverse: #ffffff;
+
+    /* Border colors */
+    --dn-border: #e2e8f0;
+    --dn-border-strong: #cbd5e1;
+
+    /* Shadow */
+    --dn-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --dn-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --dn-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --dn-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+    /* Editor specific */
+    --dn-editor-bg: #ffffff;
+    --dn-code-bg: #1e293b;
+    --dn-code-text: #e2e8f0;
+
+    /* Spacing */
+    --dn-radius-sm: 6px;
+    --dn-radius: 8px;
+    --dn-radius-lg: 12px;
+    --dn-radius-xl: 16px;
+}
+
+/* ========================================
+   CSS Variables - Dark Mode
+   ======================================== */
+.devnotes-dark {
+    --dn-primary: #60a5fa;
+    --dn-primary-hover: #93c5fd;
+    --dn-primary-light: #1e3a5f;
+    --dn-primary-dark: #3b82f6;
+
+    --dn-success: #34d399;
+    --dn-success-bg: #064e3b;
+    --dn-error: #f87171;
+    --dn-error-bg: #7f1d1d;
+    --dn-warning: #fbbf24;
+    --dn-warning-bg: #78350f;
+    --dn-info: #818cf8;
+    --dn-info-bg: #312e81;
+
+    --dn-bg-primary: #0f172a;
+    --dn-bg-secondary: #1e293b;
+    --dn-bg-tertiary: #334155;
+    --dn-bg-hover: #475569;
+
+    --dn-text-primary: #f1f5f9;
+    --dn-text-secondary: #cbd5e1;
+    --dn-text-muted: #64748b;
+    --dn-text-inverse: #0f172a;
+
+    --dn-border: #334155;
+    --dn-border-strong: #475569;
+
+    --dn-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --dn-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+    --dn-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+    --dn-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+
+    --dn-editor-bg: #1e293b;
+    --dn-code-bg: #0f172a;
+    --dn-code-text: #e2e8f0;
+}
+
+/* ========================================
+   Base Styles
+   ======================================== */
+.devnotes-wrap {
+    /* max-width: 1400px; */
+    margin: 20px 20px 20px 0;
+    padding: 24px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--dn-bg-secondary);
+    border-radius: var(--dn-radius-lg);
+    min-height: calc(100vh - 100px);
+}
+
+/* Dark mode full background override */
+.devnotes-dark {
+    background: var(--dn-bg-primary) !important;
+}
+
+/* Override WordPress admin background in dark mode */
+body.devnotes-dark-mode,
+body.devnotes-dark-mode #wpcontent,
+body.devnotes-dark-mode #wpbody,
+body.devnotes-dark-mode #wpbody-content {
+    background: #0f172a !important;
+}
+
+body.devnotes-dark-mode #wpfooter {
+    background: #0f172a !important;
+    color: #64748b;
+}
+
+.devnotes-wrap * {
+    box-sizing: border-box;
+}
+
+/* ========================================
+   Header / Title
+   ======================================== */
+.devnotes-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 0 24px;
+    padding: 0;
+    color: var(--dn-text-primary);
+    letter-spacing: -0.5px;
+}
+
+.devnotes-title .dashicons {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: var(--dn-primary);
+}
+
+/* ========================================
+   Tabs Navigation
+   ======================================== */
+.devnotes-tabs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--dn-bg-secondary);
+    padding: 6px;
+    border-radius: var(--dn-radius-lg);
+    margin-bottom: 20px;
+    box-shadow: var(--dn-shadow-sm);
+    border: 1px solid var(--dn-border);
+}
+
+.devnotes-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border: none;
+    background: transparent;
+    color: var(--dn-text-secondary);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: var(--dn-radius);
+    transition: all 0.2s ease;
+}
+
+.devnotes-tab:hover {
+    background: var(--dn-bg-hover);
+    color: var(--dn-text-primary);
+}
+
+.devnotes-tab.active {
+    background: var(--dn-bg-primary);
+    color: var(--dn-primary);
+    box-shadow: var(--dn-shadow);
+}
+
+.devnotes-tab .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.devnotes-tab-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.devnotes-theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    background: var(--dn-bg-primary);
+    border: 1px solid var(--dn-border);
+    border-radius: var(--dn-radius);
+    cursor: pointer;
+    color: var(--dn-text-secondary);
+    transition: all 0.2s ease;
+}
+
+.devnotes-theme-toggle:hover {
+    background: var(--dn-primary);
+    border-color: var(--dn-primary);
+    color: var(--dn-text-inverse);
+}
+
+.devnotes-dark .devnotes-theme-toggle {
+    color: var(--dn-warning);
+}
+
+/* Dark mode tabs styling */
+.devnotes-dark .devnotes-tabs {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+.devnotes-dark .devnotes-tab.active {
+    background: #0f172a;
+}
+
+.devnotes-dark .devnotes-tab-content {
+    background: #0f172a;
+    border-color: #334155;
+}
+
+/* ========================================
+   Tab Content
+   ======================================== */
+.devnotes-tab-content {
+    display: none;
+    background: var(--dn-bg-primary);
+    padding: 24px;
+    border-radius: var(--dn-radius-lg);
+    border: 1px solid var(--dn-border);
+    box-shadow: var(--dn-shadow);
+}
+
+.devnotes-tab-content.active {
+    display: block;
+}
+
+/* ========================================
+   Notes Editor Section
+   ======================================== */
+.devnotes-editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--dn-border);
+}
+
+.devnotes-save-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--dn-text-muted);
+    font-size: 13px;
+}
+
+.devnotes-last-saved {
+    color: var(--dn-text-secondary);
+}
+
+#devnotes-last-saved-time {
+    font-weight: 500;
+    color: var(--dn-text-primary);
+}
+
+.devnotes-save-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.devnotes-save-indicator.saving {
+    background: var(--dn-warning-bg);
+    color: var(--dn-warning);
+}
+
+.devnotes-save-indicator.saved {
+    background: var(--dn-success-bg);
+    color: var(--dn-success);
+}
+
+.devnotes-save-indicator.error {
+    background: var(--dn-error-bg);
+    color: var(--dn-error);
+}
+
+#devnotes-save-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--dn-primary);
+    color: white;
+    border: none;
+    border-radius: var(--dn-radius);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#devnotes-save-btn:hover {
+    background: var(--dn-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--dn-shadow-md);
+}
+
+#devnotes-save-btn .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* Editor container */
+#devnotes-editor {
+    min-height: 600px;
+    border: 1px solid var(--dn-border);
+    border-radius: var(--dn-radius);
+    overflow: hidden;
+    background: var(--dn-editor-bg);
+}
+
+.devnotes-dark #devnotes-editor {
+    border-color: #334155;
+    background: #1e293b;
+}
+
+/* ========================================
+   Toast UI Editor Overrides
+   ======================================== */
+.toastui-editor-defaultUI {
+    border: none !important;
+    background: var(--dn-editor-bg) !important;
+}
+
+.toastui-editor-main {
+    background: var(--dn-editor-bg) !important;
+}
+
+.toastui-editor-main-container {
+    background: var(--dn-editor-bg) !important;
+}
+
+.toastui-editor-md-container,
+.toastui-editor-ww-container {
+    background: var(--dn-editor-bg) !important;
+}
+
+.toastui-editor-defaultUI-toolbar {
+    padding: 0 !important;
+}
+
+.toastui-editor-contents {
+    font-size: 15px !important;
+    line-height: 1.7 !important;
+    color: var(--dn-text-primary) !important;
+}
+
+.toastui-editor-tooltip .arrow {
+    margin-left: 0px;
+}
+
+.ProseMirror {
+    color: var(--dn-text-primary) !important;
+    padding: 20px !important;
+    background: var(--dn-editor-bg) !important;
+}
+
+/* WYSIWYG editor text - ensure visibility in dark mode */
+.toastui-editor-contents p,
+.toastui-editor-contents h1,
+.toastui-editor-contents h2,
+.toastui-editor-contents h3,
+.toastui-editor-contents h4,
+.toastui-editor-contents h5,
+.toastui-editor-contents h6,
+.toastui-editor-contents li,
+.toastui-editor-contents td,
+.toastui-editor-contents th,
+.toastui-editor-contents blockquote,
+.toastui-editor-contents span,
+.ProseMirror p,
+.ProseMirror h1,
+.ProseMirror h2,
+.ProseMirror h3,
+.ProseMirror h4,
+.ProseMirror h5,
+.ProseMirror h6,
+.ProseMirror li,
+.ProseMirror td,
+.ProseMirror th,
+.ProseMirror blockquote,
+.ProseMirror span {
+    color: var(--dn-text-primary) !important;
+}
+
+/* Markdown source editor text */
+.toastui-editor-md-container .toastui-editor-md-splitter + .toastui-editor-md-preview,
+.toastui-editor-md-container .CodeMirror,
+.toastui-editor-md-container .CodeMirror-code,
+.toastui-editor-md-container .CodeMirror-line,
+.toastui-editor-md-container .CodeMirror-lines,
+.CodeMirror {
+    color: var(--dn-text-primary) !important;
+    background: var(--dn-editor-bg) !important;
+}
+
+.CodeMirror-cursor {
+    border-left-color: var(--dn-text-primary) !important;
+}
+
+.CodeMirror-selected {
+    background: var(--dn-primary-light) !important;
+}
+
+.toastui-editor-md-preview {
+    background: var(--dn-bg-secondary) !important;
+    padding: 20px !important;
+    color: var(--dn-text-primary) !important;
+}
+
+.toastui-editor-md-preview p,
+.toastui-editor-md-preview h1,
+.toastui-editor-md-preview h2,
+.toastui-editor-md-preview h3,
+.toastui-editor-md-preview h4,
+.toastui-editor-md-preview h5,
+.toastui-editor-md-preview h6,
+.toastui-editor-md-preview li,
+.toastui-editor-md-preview td,
+.toastui-editor-md-preview th {
+    color: var(--dn-text-primary) !important;
+}
+
+.toastui-editor-toolbar {
+    background: var(--dn-bg-secondary) !important;
+    padding: 8px 6px 0 !important;
+    height: auto;
+}
+
+.toastui-editor-toolbar-icons {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: var(--dn-text-secondary) !important;
+}
+
+
+.toastui-editor-toolbar-icons:hover {
+    background-color: var(--dn-bg-hover) !important;
+    border-color: transparent !important;
+}
+
+.toastui-editor-toolbar-icons:active,
+.toastui-editor-toolbar-icons.active {
+    background-color: var(--dn-primary-light) !important;
+    color: var(--dn-primary) !important;
+}
+
+.toastui-editor-mode-switch {
+    background: var(--dn-bg-secondary) !important;
+    border-top: 1px solid var(--dn-border) !important;
+}
+
+.toastui-editor-mode-switch .tab-item {
+    background: transparent !important;
+    color: var(--dn-text-secondary) !important;
+    border: none !important;
+}
+
+.toastui-editor-mode-switch .tab-item.active {
+    background: var(--dn-bg-primary) !important;
+    color: var(--dn-primary) !important;
+}
+
+.toastui-editor-md-tab-container {
+    background: var(--dn-bg-secondary) !important;
+    border-bottom: 1px solid var(--dn-border) !important;
+}
+
+/* Placeholder text in dark mode */
+.devnotes-dark .ProseMirror .placeholder,
+.devnotes-dark .toastui-editor-contents .placeholder {
+    color: var(--dn-text-muted) !important;
+}
+
+/* Force dark mode colors on editor content */
+.devnotes-dark .toastui-editor-defaultUI,
+.devnotes-dark .toastui-editor-main,
+.devnotes-dark .toastui-editor-main-container,
+.devnotes-dark .toastui-editor-md-container,
+.devnotes-dark .toastui-editor-ww-container {
+    background: #1e293b !important;
+}
+
+.devnotes-dark .toastui-editor-contents,
+.devnotes-dark .toastui-editor-contents *:not(pre):not(code):not(.token),
+.devnotes-dark .ProseMirror,
+.devnotes-dark .ProseMirror *:not(pre):not(code):not(.token) {
+    color: #f1f5f9 !important;
+}
+
+.devnotes-dark .toastui-editor-md-preview,
+.devnotes-dark .toastui-editor-md-preview *:not(pre):not(code):not(.token) {
+    color: #f1f5f9 !important;
+}
+
+.devnotes-dark .CodeMirror,
+.devnotes-dark .CodeMirror-code,
+.devnotes-dark .CodeMirror-line,
+.devnotes-dark .CodeMirror-lines,
+.devnotes-dark .CodeMirror pre,
+.devnotes-dark .CodeMirror span {
+    color: #f1f5f9 !important;
+    background: #1e293b !important;
+}
+
+.devnotes-dark .CodeMirror-gutters {
+    background: #1e293b !important;
+    border-right-color: #334155 !important;
+}
+
+.devnotes-dark .CodeMirror-linenumber {
+    color: #64748b !important;
+}
+
+.devnotes-dark .toastui-editor-toolbar,
+.devnotes-dark .toastui-editor-defaultUI-toolbar,
+.devnotes-dark .toastui-editor-toolbar-group {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+.devnotes-dark .toastui-editor-toolbar-icons {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    filter: brightness(0) invert(1) !important;
+}
+
+.devnotes-dark .toastui-editor-toolbar-icons:hover {
+    background-color: #334155 !important;
+}
+
+.devnotes-dark .toastui-editor-toolbar-icons:active,
+.devnotes-dark .toastui-editor-toolbar-icons.active {
+    background-color: #3b82f6 !important;
+}
+
+.devnotes-dark .toastui-editor-toolbar-divider {
+    background-color: #334155 !important;
+}
+
+.devnotes-dark .toastui-editor-dropdown-toolbar {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+.devnotes-dark .toastui-editor-popup {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+.devnotes-dark .toastui-editor-popup-body {
+    background: #1e293b !important;
+}
+
+.devnotes-dark .toastui-editor-popup-body label,
+.devnotes-dark .toastui-editor-popup-body input,
+.devnotes-dark .toastui-editor-popup-body select {
+    color: #f1f5f9 !important;
+    background: #0f172a !important;
+    border-color: #334155 !important;
+}
+
+.devnotes-dark .toastui-editor-mode-switch {
+    background: #1e293b !important;
+    border-top-color: #334155 !important;
+}
+
+.devnotes-dark .toastui-editor-mode-switch .tab-item {
+    color: #94a3b8 !important;
+}
+
+.devnotes-dark .toastui-editor-mode-switch .tab-item.active {
+    color: #60a5fa !important;
+    background: #0f172a !important;
+}
+
+/* Table styling in dark mode */
+.toastui-editor-contents table,
+.toastui-editor-md-preview table {
+    border-color: var(--dn-border) !important;
+}
+
+.toastui-editor-contents th,
+.toastui-editor-contents td,
+.toastui-editor-md-preview th,
+.toastui-editor-md-preview td {
+    border-color: var(--dn-border) !important;
+    background: var(--dn-bg-primary) !important;
+}
+
+.toastui-editor-contents th,
+.toastui-editor-md-preview th {
+    background: var(--dn-bg-tertiary) !important;
+}
+
+/* Blockquote styling */
+.toastui-editor-contents blockquote,
+.toastui-editor-md-preview blockquote {
+    border-left-color: var(--dn-primary) !important;
+    color: var(--dn-text-secondary) !important;
+}
+
+/* Links */
+.toastui-editor-contents a,
+.toastui-editor-md-preview a {
+    color: var(--dn-primary) !important;
+}
+
+/* HR */
+.toastui-editor-contents hr,
+.toastui-editor-md-preview hr {
+    border-color: var(--dn-border) !important;
+}
+
+/* Code blocks in editor */
+.toastui-editor-contents pre,
+.toastui-editor-md-preview pre {
+    background: var(--dn-code-bg) !important;
+    color: var(--dn-code-text) !important;
+    border-radius: var(--dn-radius) !important;
+    padding: 16px !important;
+    font-family: "JetBrains Mono", "Fira Code", "SF Mono", Consolas, monospace !important;
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+    overflow-x: auto !important;
+}
+
+.toastui-editor-contents code,
+.toastui-editor-md-preview code {
+    background: var(--dn-bg-tertiary) !important;
+    color: var(--dn-primary) !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    font-family: "JetBrains Mono", "Fira Code", "SF Mono", Consolas, monospace !important;
+    font-size: 0.9em !important;
+}
+
+.toastui-editor-contents pre code {
+    background: transparent !important;
+    color: inherit !important;
+    padding: 0 !important;
+}
+
+/* ========================================
+   Credentials Section
+   ======================================== */
+.devnotes-credentials-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.devnotes-credentials-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--dn-text-primary);
+}
+
+#devnotes-add-credential {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: var(--dn-primary);
+    color: white;
+    border: none;
+    border-radius: var(--dn-radius);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#devnotes-add-credential:hover {
+    background: var(--dn-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--dn-shadow-md);
+}
+
+#devnotes-add-credential .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: white;
+}
+
+/* Credentials list */
+.devnotes-credentials-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Credential card */
+.devnotes-credential-card {
+    background: var(--dn-bg-secondary);
+    border: 1px solid var(--dn-border);
+    border-radius: var(--dn-radius-lg);
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.devnotes-credential-card:hover {
+    border-color: var(--dn-primary);
+    box-shadow: var(--dn-shadow-md);
+    transform: translateY(-2px);
+}
+
+.devnotes-credential-info {
+    min-width: 0;
+}
+
+.devnotes-credential-label {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--dn-text-primary);
+    margin-bottom: 8px;
+}
+
+.devnotes-credential-meta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--dn-text-secondary);
+}
+
+.devnotes-credential-meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.devnotes-credential-meta .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    color: var(--dn-text-muted);
+}
+
+.devnotes-credential-meta a {
+    color: var(--dn-primary);
+    text-decoration: none;
+}
+
+.devnotes-credential-meta a:hover {
+    text-decoration: underline;
+}
+
+/* Credential action buttons */
+.devnotes-credential-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.devnotes-credential-actions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: var(--dn-radius);
+    border: 1px solid var(--dn-border);
+    background: var(--dn-bg-primary);
+    color: var(--dn-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.devnotes-credential-actions button:hover {
+    background: var(--dn-primary);
+    border-color: var(--dn-primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--dn-shadow);
+}
+
+.devnotes-credential-actions button.delete:hover {
+    background: var(--dn-error);
+    border-color: var(--dn-error);
+}
+
+.devnotes-credential-actions .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* Credential revealed fields */
+.devnotes-credential-fields {
+    grid-column: 1 / -1;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--dn-border);
+    display: none;
+}
+
+.devnotes-credential-fields.visible {
+    display: block;
+}
+
+.devnotes-field-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding: 12px 16px;
+    background: var(--dn-bg-primary);
+    border: 1px solid var(--dn-border);
+    border-radius: var(--dn-radius);
+}
+
+.devnotes-field-row:last-child {
+    margin-bottom: 0;
+}
+
+.devnotes-field-label {
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--dn-text-muted);
+    min-width: 100px;
+}
+
+.devnotes-field-value {
+    flex: 1;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    font-size: 14px;
+    color: var(--dn-text-primary);
+    word-break: break-all;
+    background: var(--dn-bg-tertiary);
+    padding: 8px 12px;
+    border-radius: var(--dn-radius-sm);
+}
+
+.devnotes-field-value.masked {
+    letter-spacing: 3px;
+    color: var(--dn-text-muted);
+}
+
+.devnotes-field-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.devnotes-field-actions button {
+    padding: 6px 12px;
+    border-radius: var(--dn-radius-sm);
+    border: 1px solid var(--dn-border);
+    background: var(--dn-bg-secondary);
+    color: var(--dn-text-secondary);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.devnotes-field-actions button:hover {
+    background: var(--dn-primary);
+    border-color: var(--dn-primary);
+    color: white;
+}
+
+/* ========================================
+   Empty State
+   ======================================== */
+.devnotes-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--dn-text-muted);
+}
+
+.devnotes-empty-state .dashicons {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    opacity: 0.3;
+    color: var(--dn-text-muted);
+}
+
+.devnotes-empty-state p {
+    font-size: 16px;
+    margin: 0 0 24px;
+    color: var(--dn-text-secondary);
+}
+
+
+/* ========================================
+   Modal Styles
+   ======================================== */
+.devnotes-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 100100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.devnotes-modal.active {
+    display: flex;
+}
+
+.devnotes-modal-content {
+    background: var(--dn-bg-primary);
+    border-radius: var(--dn-radius-xl);
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--dn-shadow-lg);
+    border: 1px solid var(--dn-border);
+}
+
+.devnotes-modal-small {
+    max-width: 420px;
+}
+
+.devnotes-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--dn-border);
+    background: var(--dn-bg-secondary);
+    border-radius: var(--dn-radius-xl) var(--dn-radius-xl) 0 0;
+}
+
+.devnotes-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--dn-text-primary);
+}
+
+.devnotes-modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--dn-bg-tertiary);
+    border: none;
+    border-radius: var(--dn-radius);
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--dn-text-secondary);
+    transition: all 0.2s ease;
+}
+
+.devnotes-modal-close:hover {
+    background: var(--dn-error);
+    color: white;
+}
+
+#devnotes-credential-form,
+#devnotes-password-form {
+    padding: 24px;
+}
+
+.devnotes-form-row {
+    margin-bottom: 20px;
+}
+
+.devnotes-form-row:last-of-type {
+    margin-bottom: 0;
+}
+
+.devnotes-form-row label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--dn-text-primary);
+    font-size: 14px;
+}
+
+.devnotes-form-row label .required {
+    color: var(--dn-error);
+    margin-left: 2px;
+}
+
+.devnotes-form-row input[type="text"],
+.devnotes-form-row input[type="url"],
+.devnotes-form-row input[type="password"],
+.devnotes-form-row select,
+.devnotes-form-row textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--dn-border);
+    border-radius: var(--dn-radius);
+    font-size: 14px;
+    background: var(--dn-bg-primary);
+    color: var(--dn-text-primary);
+    transition: all 0.2s ease;
+}
+
+.devnotes-form-row input:focus,
+.devnotes-form-row select:focus,
+.devnotes-form-row textarea:focus {
+    border-color: var(--dn-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--dn-primary-light);
+}
+
+.devnotes-form-row select {
+    cursor: pointer;
+}
+
+.devnotes-form-row textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Password field with toggle */
+.devnotes-password-field {
+    position: relative;
+    display: flex;
+}
+
+.devnotes-password-field input,
+.devnotes-password-field textarea {
+    padding-right: 48px;
+}
+
+.devnotes-toggle-visibility {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: var(--dn-bg-tertiary);
+    cursor: pointer;
+    border-radius: var(--dn-radius-sm);
+    color: var(--dn-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.devnotes-toggle-visibility:hover {
+    background: var(--dn-primary);
+    color: white;
+}
+
+.devnotes-secure-textarea {
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    -webkit-text-security: disc;
+}
+
+.devnotes-secure-textarea.visible {
+    -webkit-text-security: none;
+}
+
+.devnotes-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 20px 24px;
+    border-top: 1px solid var(--dn-border);
+    background: var(--dn-bg-secondary);
+    border-radius: 0 0 var(--dn-radius-xl) var(--dn-radius-xl);
+    margin-top: 24px;
+}
+
+.devnotes-modal-footer .button {
+    padding: 10px 20px;
+    border-radius: var(--dn-radius);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.devnotes-modal-footer .button.button-primary {
+    background: var(--dn-primary);
+    border-color: var(--dn-primary);
+    color: white;
+}
+
+.devnotes-modal-footer .button.button-primary:hover {
+    background: var(--dn-primary-hover);
+    border-color: var(--dn-primary-hover);
+}
+
+.devnotes-modal-cancel {
+    background: var(--dn-bg-tertiary) !important;
+    border: 1px solid var(--dn-border) !important;
+    color: var(--dn-text-secondary) !important;
+}
+
+.devnotes-modal-cancel:hover {
+    background: var(--dn-bg-hover) !important;
+    color: var(--dn-text-primary) !important;
+}
+
+.devnotes-error {
+    color: var(--dn-error);
+    font-size: 13px;
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: var(--dn-error-bg);
+    border-radius: var(--dn-radius);
+    border: 1px solid var(--dn-error);
+}
+
+/* ========================================
+   Activity Log
+   ======================================== */
+.devnotes-activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.devnotes-activity-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--dn-text-primary);
+}
+
+.devnotes-activity-filters select {
+    padding: 10px 14px;
+    border: 1px solid var(--dn-border);
+    border-radius: var(--dn-radius);
+    background: var(--dn-bg-primary);
+    color: var(--dn-text-primary);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.devnotes-activity-filters select:focus {
+    border-color: var(--dn-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--dn-primary-light);
+}
+
+.devnotes-activity-log {
+    background: var(--dn-bg-secondary);
+    border: 1px solid var(--dn-border);
+    border-radius: var(--dn-radius-lg);
+    overflow: hidden;
+}
+
+.devnotes-activity-row {
+    display: grid;
+    grid-template-columns: 160px 100px 1fr 150px;
+    gap: 16px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--dn-border);
+    align-items: center;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+.devnotes-activity-row:last-child {
+    border-bottom: none;
+}
+
+.devnotes-activity-row:hover {
+    background: var(--dn-bg-tertiary);
+}
+
+.devnotes-activity-time {
+    color: var(--dn-text-muted);
+    font-size: 13px;
+}
+
+.devnotes-activity-action {
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    text-align: center;
+}
+
+.devnotes-activity-action.viewed {
+    background: var(--dn-info-bg);
+    color: var(--dn-info);
+}
+
+.devnotes-activity-action.copied {
+    background: var(--dn-warning-bg);
+    color: var(--dn-warning);
+}
+
+.devnotes-activity-action.created {
+    background: var(--dn-success-bg);
+    color: var(--dn-success);
+}
+
+.devnotes-activity-action.modified {
+    background: #f3e8ff;
+    color: #9333ea;
+}
+
+.devnotes-dark .devnotes-activity-action.modified {
+    background: #581c87;
+    color: #c084fc;
+}
+
+.devnotes-activity-action.deleted {
+    background: var(--dn-error-bg);
+    color: var(--dn-error);
+}
+
+/* Notes action types */
+.devnotes-activity-action.notes_accessed {
+    background: #ecfdf5;
+    color: #059669;
+}
+
+.devnotes-dark .devnotes-activity-action.notes_accessed {
+    background: #064e3b;
+    color: #6ee7b7;
+}
+
+.devnotes-activity-action.notes_saved {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.devnotes-dark .devnotes-activity-action.notes_saved {
+    background: #1e3a8a;
+    color: #93c5fd;
+}
+
+.devnotes-activity-action.notes_copied {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.devnotes-dark .devnotes-activity-action.notes_copied {
+    background: #78350f;
+    color: #fcd34d;
+}
+
+.devnotes-activity-action.notes_pasted {
+    background: #fce7f3;
+    color: #db2777;
+}
+
+.devnotes-dark .devnotes-activity-action.notes_pasted {
+    background: #831843;
+    color: #f9a8d4;
+}
+
+.devnotes-activity-action.notes_exported {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.devnotes-dark .devnotes-activity-action.notes_exported {
+    background: #14532d;
+    color: #86efac;
+}
+
+.devnotes-activity-label {
+    color: var(--dn-text-primary);
+    font-weight: 500;
+}
+
+.devnotes-activity-details {
+    font-size: 12px;
+    color: var(--dn-text-muted);
+    font-weight: 400;
+    margin-top: 4px;
+}
+
+.devnotes-activity-user {
+    color: var(--dn-text-secondary);
+    font-size: 13px;
+    text-align: right;
+}
+
+/* ========================================
+   Pagination
+   ======================================== */
+.devnotes-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 24px;
+}
+
+.devnotes-pagination button {
+    padding: 10px 16px;
+    border: 1px solid var(--dn-border);
+    border-radius: var(--dn-radius);
+    background: var(--dn-bg-primary);
+    color: var(--dn-text-primary);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.devnotes-pagination button:hover:not(:disabled) {
+    background: var(--dn-primary);
+    border-color: var(--dn-primary);
+    color: white;
+}
+
+.devnotes-pagination button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.devnotes-pagination button.active {
+    background: var(--dn-primary);
+    border-color: var(--dn-primary);
+    color: white;
+}
+
+/* ========================================
+   Settings
+   ======================================== */
+.devnotes-settings h2 {
+    margin: 0 0 24px;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--dn-text-primary);
+}
+
+.devnotes-settings h3 {
+    margin: 32px 0 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--dn-border);
+    color: var(--dn-text-primary);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.devnotes-settings h3:first-of-type {
+    margin-top: 0;
+}
+
+.devnotes-dark .devnotes-settings h2,
+.devnotes-dark .devnotes-settings h3 {
+    color: #f1f5f9;
+}
+
+.devnotes-dark .devnotes-settings h3 {
+    border-bottom-color: #334155;
+}
+
+.devnotes-settings .form-table {
+    background: var(--dn-bg-secondary);
+    border-radius: var(--dn-radius-lg);
+    border: 1px solid var(--dn-border);
+    overflow: hidden;
+}
+
+.devnotes-settings .form-table th {
+    color: var(--dn-text-primary);
+    font-weight: 500;
+    background: var(--dn-bg-tertiary);
+    padding: 16px 20px;
+}
+
+.devnotes-settings .form-table td {
+    padding: 16px 20px;
+    background: var(--dn-bg-secondary);
+}
+
+.devnotes-settings .form-table tr {
+    border-bottom: 1px solid var(--dn-border);
+}
+
+.devnotes-settings .form-table tr:last-child {
+    border-bottom: none;
+}
+
+.devnotes-settings .description {
+    color: var(--dn-text-muted);
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+.devnotes-settings input[type="number"] {
+    width: 80px;
+    padding: 8px 12px;
+    border: 1px solid var(--dn-border);
+    border-radius: var(--dn-radius);
+    background: var(--dn-bg-primary);
+    color: var(--dn-text-primary);
+}
+
+.devnotes-settings input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--dn-primary);
+}
+
+.devnotes-settings .submit {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--dn-border);
+}
+
+.devnotes-settings .submit .button-primary {
+    padding: 10px 24px;
+    background: var(--dn-primary);
+    border-color: var(--dn-primary);
+    border-radius: var(--dn-radius);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.devnotes-settings .submit .button-primary:hover {
+    background: var(--dn-primary-hover);
+    border-color: var(--dn-primary-hover);
+}
+
+/* Toggle switch */
+.devnotes-toggle {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 26px;
+}
+
+.devnotes-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.devnotes-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--dn-bg-tertiary);
+    transition: 0.3s;
+    border-radius: 26px;
+    border: 1px solid var(--dn-border);
+}
+
+.devnotes-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+    box-shadow: var(--dn-shadow);
+}
+
+.devnotes-toggle input:checked + .devnotes-toggle-slider {
+    background-color: var(--dn-primary);
+    border-color: var(--dn-primary);
+}
+
+.devnotes-toggle input:checked + .devnotes-toggle-slider:before {
+    transform: translateX(22px);
+}
+
+/* Access badge */
+.devnotes-access-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.devnotes-access-badge.access-granted {
+    background: var(--dn-success-bg);
+    color: var(--dn-success);
+}
+
+/* User access table */
+#devnotes-user-access {
+    margin-top: 16px;
+}
+
+#devnotes-user-access table {
+    background: var(--dn-bg-secondary);
+    border-radius: var(--dn-radius-lg);
+    border: 1px solid var(--dn-border);
+    overflow: hidden;
+}
+
+#devnotes-user-access th {
+    background: var(--dn-bg-tertiary);
+    color: var(--dn-text-primary);
+    font-weight: 600;
+    padding: 14px 16px;
+    text-align: left;
+}
+
+#devnotes-user-access td {
+    padding: 14px 16px;
+    vertical-align: middle;
+    border-top: 1px solid var(--dn-border);
+    color: var(--dn-text-primary);
+}
+
+#devnotes-user-access img {
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 12px;
+}
+
+#devnotes-user-access strong {
+    color: var(--dn-text-primary);
+}
+
+#devnotes-user-access .description {
+    color: var(--dn-text-muted);
+    font-size: 12px;
+}
+
+/* Dark mode settings overrides */
+.devnotes-dark .devnotes-settings .form-table {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+.devnotes-dark .devnotes-settings .form-table th {
+    background: #334155;
+    color: #f1f5f9;
+}
+
+.devnotes-dark .devnotes-settings .form-table td {
+    background: #1e293b;
+    color: #f1f5f9;
+}
+
+.devnotes-dark .devnotes-settings .form-table tr {
+    border-bottom-color: #334155;
+}
+
+.devnotes-dark .devnotes-settings .description {
+    color: #94a3b8;
+}
+
+.devnotes-dark .devnotes-settings input[type="number"] {
+    background: #0f172a;
+    border-color: #334155;
+    color: #f1f5f9;
+}
+
+.devnotes-dark .devnotes-settings input[type="number"]:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+.devnotes-dark .devnotes-settings .submit {
+    border-top-color: #334155;
+}
+
+.devnotes-dark #devnotes-user-access table {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+.devnotes-dark #devnotes-user-access th {
+    background: #334155;
+    color: #f1f5f9;
+}
+
+.devnotes-dark #devnotes-user-access td {
+    background: #1e293b;
+    border-top-color: #334155;
+    color: #f1f5f9;
+}
+
+.devnotes-dark #devnotes-user-access strong {
+    color: #f1f5f9;
+}
+
+.devnotes-dark #devnotes-user-access .description {
+    color: #64748b;
+}
+
+.devnotes-dark .devnotes-toggle-slider {
+    background-color: #334155;
+    border-color: #475569;
+}
+
+.devnotes-dark .devnotes-access-badge.access-granted {
+    background: #064e3b;
+    color: #34d399;
+}
+
+/* ========================================
+   Loading & Notifications
+   ======================================== */
+.devnotes-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px;
+}
+
+.devnotes-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--dn-border);
+    border-top-color: var(--dn-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Copied notification */
+.devnotes-copied-notice {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--dn-success);
+    color: white;
+    padding: 14px 24px;
+    border-radius: var(--dn-radius-lg);
+    font-weight: 600;
+    box-shadow: var(--dn-shadow-lg);
+    z-index: 100200;
+    animation: slideInUp 0.3s ease;
+}
+
+@keyframes slideInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ========================================
+   Drag and Drop
+   ======================================== */
+.devnotes-credential-card.dragging {
+    opacity: 0.5;
+    transform: scale(0.98);
+}
+
+.devnotes-credential-card.drag-over {
+    border-color: var(--dn-primary);
+    background: var(--dn-primary-light);
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+@media screen and (max-width: 1024px) {
+    .devnotes-activity-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .devnotes-activity-user {
+        text-align: left;
+    }
+}
+
+@media screen and (max-width: 782px) {
+    .devnotes-wrap {
+        margin: 10px;
+    }
+
+    .devnotes-title {
+        font-size: 22px;
+    }
+
+    .devnotes-tabs {
+        flex-wrap: wrap;
+        padding: 8px;
+    }
+
+    .devnotes-tab {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+
+    .devnotes-tab-actions {
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid var(--dn-border);
+    }
+
+    .devnotes-tab-content {
+        padding: 16px;
+    }
+
+    .devnotes-editor-header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    .devnotes-save-status {
+        justify-content: center;
+    }
+
+    #devnotes-save-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    #devnotes-editor {
+        min-height: 400px;
+    }
+
+    .devnotes-credentials-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    #devnotes-add-credential {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .devnotes-credential-card {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .devnotes-credential-actions {
+        justify-content: flex-start;
+    }
+
+    .devnotes-activity-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .devnotes-modal-content {
+        margin: 10px;
+        max-height: calc(100vh - 20px);
+    }
+
+    .devnotes-modal-header,
+    #devnotes-credential-form,
+    #devnotes-password-form,
+    .devnotes-modal-footer {
+        padding: 16px;
+    }
+}
+
+/* ========================================
+   WordPress Admin Overrides
+   ======================================== */
+.devnotes-wrap .button {
+    height: auto;
+    line-height: 1.4;
+}
+
+.devnotes-wrap input[type="checkbox"] {
+    margin: 0;
+}

@@ -1,0 +1,21 @@
+# IDE and editor files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node modules (if using build tools)
+node_modules/
+
+# Composer vendor (root level only)
+/vendor/
+
+# Debug files
+*.log
+
+# Claude Code
+.claude/
