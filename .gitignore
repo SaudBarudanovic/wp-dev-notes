@@ -19,3 +19,11 @@ node_modules/
 
 # Claude Code
 .claude/
+
+# WordPress.org SVN
+.svn/
+trunk/
+tags/
+assets/banner-*.png
+assets/icon-*.png
+assets/screenshot-*.png

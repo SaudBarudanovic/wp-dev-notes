@@ -4,7 +4,7 @@ Tags: markdown, notes, credentials, developer, encryption
 Requires at least: 5.2
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,7 +29,8 @@ Briefnote is designed for developers and site administrators who need a secure, 
 * Support for multiple credential types: Username/Password, API Keys, SSH Keys, Secure Notes
 * Reveal and copy functionality with audit logging
 * Optional password re-verification for sensitive operations
-* Role-based access control with custom capability
+* Granular per-user permissions: independent View and Edit access for notes and credentials
+* Drag-and-drop credential reordering
 
 = Audit Logging =
 
@@ -65,9 +66,9 @@ Briefnote uses libsodium's crypto_secretbox construction, which provides XSalsa2
 
 The encryption key is automatically generated using cryptographically secure random bytes and stored in the WordPress options table. It is created on first use with no configuration required.
 
-= Can I grant credential access to non-admin users? =
+= Can I grant access to non-admin users? =
 
-Yes. Go to Settings tab and toggle access for specific users. Users with access receive the `view_briefnote_credentials` capability. Administrators always have access.
+Yes. Go to the Settings tab where you can independently toggle View Notes, Edit Notes, View Credentials, and Edit Credentials for each user. View grants read-only access, Edit grants full create/modify/delete access. Administrators always have full access.
 
 = What happens if I delete the plugin? =
 
@@ -87,6 +88,19 @@ No, the Markdown notes are stored as plain text in the WordPress options table. 
 
 == Changelog ==
 
+= 1.1.0 =
+* Added granular per-user permissions with independent View and Edit toggles for notes and credentials
+* Added read-only viewer mode for users with View Notes access
+* Added Edit Credentials permission to control who can create, modify, and delete credentials
+* Fixed dark mode toolbar icon rendering in the Markdown editor
+* Added dark mode support for modals and activity log filters
+* Added visual save confirmation with spinner and status icons for settings
+* Improved card-level copy button to copy all credential fields formatted
+* Fixed credentials not loading when Credentials is the default active tab
+* Unified tab header heights across all tabs
+* Added custom scrollbar styling for modals
+* Capability migration system for seamless upgrades from 1.0.0
+
 = 1.0.0 =
 * Initial release
 * Markdown editor with Toast UI Editor integration
@@ -97,6 +111,9 @@ No, the Markdown notes are stored as plain text in the WordPress options table. 
 * Auto-save functionality
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+Granular per-user permissions: independently control View and Edit access for notes and credentials. Dark mode improvements and bug fixes.
 
 = 1.0.0 =
 Initial release of Briefnote.
