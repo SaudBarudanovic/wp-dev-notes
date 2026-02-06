@@ -29,8 +29,15 @@ Briefnote is designed for developers and site administrators who need a secure, 
 * Support for multiple credential types: Username/Password, API Keys, SSH Keys, Secure Notes
 * Reveal and copy functionality with audit logging
 * Optional password re-verification for sensitive operations
-* Granular per-user permissions: independent View and Edit access for notes and credentials
 * Drag-and-drop credential reordering
+
+= Permissions & Access Control =
+
+* Granular per-user permissions: independent View and Edit toggles for notes and credentials
+* Read-only viewer mode for users with View Notes access
+* Edit permission controls who can create, modify, and delete content
+* Automatic capability migration on upgrade
+* Administrators always have full access
 
 = Audit Logging =
 
@@ -72,7 +79,7 @@ Yes. Go to the Settings tab where you can independently toggle View Notes, Edit 
 
 = What happens if I delete the plugin? =
 
-Deactivating the plugin keeps all data intact. To completely remove all data, delete the plugin and then manually remove the database tables (`wp_briefnote_credentials`, `wp_briefnote_audit_log`) and options (`briefnote_content`, `briefnote_settings`, `briefnote_encryption_key`).
+Deactivating the plugin removes all custom capabilities but keeps your data intact. To completely remove all data, delete the plugin and then manually remove the database tables (`wp_briefnote_credentials`, `wp_briefnote_audit_log`) and options (`briefnote_content`, `briefnote_last_saved`, `briefnote_settings`, `briefnote_encryption_key`, `briefnote_caps_version`).
 
 = Is the Markdown content encrypted? =
 
