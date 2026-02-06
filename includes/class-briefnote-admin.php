@@ -77,7 +77,7 @@ class Briefnote_Admin {
         add_menu_page(
             __( 'Briefnote', 'briefnote' ),
             __( 'Briefnote', 'briefnote' ),
-            'manage_options',
+            BRIEFNOTE_ACCESS_CAP,
             'briefnote',
             array( $this, 'render_main_page' ),
             'dashicons-media-document',
@@ -172,7 +172,11 @@ class Briefnote_Admin {
                 'nonce'            => wp_create_nonce( 'briefnote_nonce' ),
                 'content'          => Briefnote_Notes::get_content(),
                 'lastSaved'        => Briefnote_Notes::get_last_saved_formatted(),
+                'canViewNotes'     => Briefnote_Notes::current_user_can_view(),
+                'canEditNotes'     => Briefnote_Notes::current_user_can_edit(),
                 'canViewCredentials' => Briefnote_Credentials::current_user_can_view(),
+                'canEditCredentials' => Briefnote_Credentials::current_user_can_edit(),
+                'isAdmin'          => current_user_can( 'manage_options' ),
                 'credentialTypes'  => Briefnote_Credentials::get_types(),
                 'strings'          => array(
                     'saving'           => __( 'Saving...', 'briefnote' ),
@@ -199,8 +203,19 @@ class Briefnote_Admin {
      * Render main admin page
      */
     public function render_main_page() {
+        $can_view_notes       = Briefnote_Notes::current_user_can_view();
+        $can_edit_notes       = Briefnote_Notes::current_user_can_edit();
         $can_view_credentials = Briefnote_Credentials::current_user_can_view();
-        $is_admin = current_user_can( 'manage_options' );
+        $can_edit_credentials = Briefnote_Credentials::current_user_can_edit();
+        $is_admin             = current_user_can( 'manage_options' );
+
+        // Determine which tab is first/active
+        $first_tab = null;
+        if ( $can_view_notes ) {
+            $first_tab = 'notes';
+        } elseif ( $can_view_credentials ) {
+            $first_tab = 'credentials';
+        }
         ?>
         <div class="wrap briefnote-wrap">
             <h1 class="briefnote-title">
@@ -209,12 +224,14 @@ class Briefnote_Admin {
             </h1>
 
             <div class="briefnote-tabs">
-                <button type="button" class="briefnote-tab active" data-tab="notes">
+                <?php if ( $can_view_notes ) : ?>
+                <button type="button" class="briefnote-tab <?php echo 'notes' === $first_tab ? 'active' : ''; ?>" data-tab="notes">
                     <span class="dashicons dashicons-edit"></span>
                     <?php esc_html_e( 'Notes', 'briefnote' ); ?>
                 </button>
+                <?php endif; ?>
                 <?php if ( $can_view_credentials ) : ?>
-                <button type="button" class="briefnote-tab" data-tab="credentials">
+                <button type="button" class="briefnote-tab <?php echo 'credentials' === $first_tab ? 'active' : ''; ?>" data-tab="credentials">
                     <span class="dashicons dashicons-lock"></span>
                     <?php esc_html_e( 'Credentials', 'briefnote' ); ?>
                 </button>
@@ -237,8 +254,9 @@ class Briefnote_Admin {
                 </div>
             </div>
 
+            <?php if ( $can_view_notes ) : ?>
             <!-- Notes Tab -->
-            <div class="briefnote-tab-content active" id="tab-notes">
+            <div class="briefnote-tab-content <?php echo 'notes' === $first_tab ? 'active' : ''; ?>" id="tab-notes">
                 <div class="briefnote-editor-header">
                     <div class="briefnote-save-status">
                         <span class="briefnote-last-saved">
@@ -247,23 +265,33 @@ class Briefnote_Admin {
                         </span>
                         <span id="briefnote-save-indicator" class="briefnote-save-indicator"></span>
                     </div>
+                    <?php if ( $can_edit_notes ) : ?>
                     <button type="button" id="briefnote-save-btn" class="button button-primary">
                         <span class="dashicons dashicons-saved"></span>
                         <?php esc_html_e( 'Save', 'briefnote' ); ?>
                     </button>
+                    <?php else : ?>
+                    <span class="briefnote-readonly-badge">
+                        <span class="dashicons dashicons-lock"></span>
+                        <?php esc_html_e( 'Read Only', 'briefnote' ); ?>
+                    </span>
+                    <?php endif; ?>
                 </div>
                 <div id="briefnote-editor"></div>
             </div>
+            <?php endif; ?>
 
             <?php if ( $can_view_credentials ) : ?>
             <!-- Credentials Tab -->
-            <div class="briefnote-tab-content" id="tab-credentials">
-                <div class="briefnote-credentials-header">
+            <div class="briefnote-tab-content <?php echo 'credentials' === $first_tab ? 'active' : ''; ?>" id="tab-credentials">
+                <div class="briefnote-tab-header">
                     <h2><?php esc_html_e( 'Secure Credentials', 'briefnote' ); ?></h2>
+                    <?php if ( $can_edit_credentials ) : ?>
                     <button type="button" id="briefnote-add-credential" class="button button-primary">
                         <span class="dashicons dashicons-plus-alt"></span>
                         <?php esc_html_e( 'Add Credential', 'briefnote' ); ?>
                     </button>
+                    <?php endif; ?>
                 </div>
                 <div id="briefnote-credentials-list" class="briefnote-credentials-list">
                     <!-- Credentials loaded via JS -->
@@ -272,7 +300,7 @@ class Briefnote_Admin {
 
             <!-- Activity Log Tab -->
             <div class="briefnote-tab-content" id="tab-activity">
-                <div class="briefnote-activity-header">
+                <div class="briefnote-tab-header">
                     <h2><?php esc_html_e( 'Activity Log', 'briefnote' ); ?></h2>
                     <div class="briefnote-activity-filters">
                         <select id="briefnote-activity-filter-action">
@@ -296,7 +324,6 @@ class Briefnote_Admin {
                 <?php $this->render_settings_tab(); ?>
             </div>
             <?php endif; ?>
-        </div>
 
         <!-- Credential Modal -->
         <div id="briefnote-credential-modal" class="briefnote-modal">
@@ -409,6 +436,7 @@ class Briefnote_Admin {
                 </form>
             </div>
         </div>
+        </div>
         <?php
     }
 
@@ -419,7 +447,9 @@ class Briefnote_Admin {
         $settings = get_option( 'briefnote_settings', array() );
         ?>
         <div class="briefnote-settings">
-            <h2><?php esc_html_e( 'Settings', 'briefnote' ); ?></h2>
+            <div class="briefnote-tab-header">
+                <h2><?php esc_html_e( 'Settings', 'briefnote' ); ?></h2>
+            </div>
 
             <form id="briefnote-settings-form">
                 <h3><?php esc_html_e( 'Security Settings', 'briefnote' ); ?></h3>
@@ -454,7 +484,7 @@ class Briefnote_Admin {
                 <h3><?php esc_html_e( 'User Access', 'briefnote' ); ?></h3>
 
                 <p class="description">
-                    <?php esc_html_e( 'Grant or revoke access to the Credentials section for specific users. Only users with this permission can view, add, edit, or delete credentials.', 'briefnote' ); ?>
+                    <?php esc_html_e( 'Manage granular access permissions for each user. View grants read-only access. Edit grants full create/modify/delete access. Edit implies View.', 'briefnote' ); ?>
                 </p>
 
                 <div id="briefnote-user-access">
@@ -474,7 +504,6 @@ class Briefnote_Admin {
      * Render user access list
      */
     private function render_user_access_list() {
-        // Get all users who can potentially have this capability
         $users = get_users( array(
             'role__in' => array( 'administrator', 'editor', 'author' ),
             'orderby'  => 'display_name',
@@ -485,8 +514,11 @@ class Briefnote_Admin {
             <thead>
                 <tr>
                     <th><?php esc_html_e( 'User', 'briefnote' ); ?></th>
-                    <th><?php esc_html_e( 'Role', 'briefnote' ); ?></th>
-                    <th><?php esc_html_e( 'Credentials Access', 'briefnote' ); ?></th>
+                    <th class="briefnote-role-col"><?php esc_html_e( 'Role', 'briefnote' ); ?></th>
+                    <th class="briefnote-cap-col"><?php esc_html_e( 'View Notes', 'briefnote' ); ?></th>
+                    <th class="briefnote-cap-col"><?php esc_html_e( 'Edit Notes', 'briefnote' ); ?></th>
+                    <th class="briefnote-cap-col"><?php esc_html_e( 'View Credentials', 'briefnote' ); ?></th>
+                    <th class="briefnote-cap-col"><?php esc_html_e( 'Edit Credentials', 'briefnote' ); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -504,19 +536,61 @@ class Briefnote_Admin {
                         echo esc_html( implode( ', ', $roles ) );
                         ?>
                     </td>
-                    <td>
-                        <?php if ( in_array( 'administrator', $user->roles, true ) ) : ?>
-                            <span class="briefnote-access-badge access-granted">
-                                <?php esc_html_e( 'Always (Admin)', 'briefnote' ); ?>
-                            </span>
-                        <?php else : ?>
+                    <?php if ( in_array( 'administrator', $user->roles, true ) ) : ?>
+                        <td class="briefnote-cap-col">
+                            <span class="briefnote-access-badge access-granted"><?php esc_html_e( 'Always', 'briefnote' ); ?></span>
+                        </td>
+                        <td class="briefnote-cap-col">
+                            <span class="briefnote-access-badge access-granted"><?php esc_html_e( 'Always', 'briefnote' ); ?></span>
+                        </td>
+                        <td class="briefnote-cap-col">
+                            <span class="briefnote-access-badge access-granted"><?php esc_html_e( 'Always', 'briefnote' ); ?></span>
+                        </td>
+                        <td class="briefnote-cap-col">
+                            <span class="briefnote-access-badge access-granted"><?php esc_html_e( 'Always', 'briefnote' ); ?></span>
+                        </td>
+                    <?php else : ?>
+                        <td class="briefnote-cap-col">
                             <label class="briefnote-toggle">
-                                <input type="checkbox" name="user_access[]" value="<?php echo esc_attr( $user->ID ); ?>"
+                                <input type="checkbox" name="user_cap_view_notes[]"
+                                    value="<?php echo esc_attr( $user->ID ); ?>"
+                                    data-user="<?php echo esc_attr( $user->ID ); ?>"
+                                    data-cap="view_notes"
+                                    <?php checked( $user->has_cap( BRIEFNOTE_VIEW_NOTES_CAP ) ); ?>>
+                                <span class="briefnote-toggle-slider"></span>
+                            </label>
+                        </td>
+                        <td class="briefnote-cap-col">
+                            <label class="briefnote-toggle">
+                                <input type="checkbox" name="user_cap_edit_notes[]"
+                                    value="<?php echo esc_attr( $user->ID ); ?>"
+                                    data-user="<?php echo esc_attr( $user->ID ); ?>"
+                                    data-cap="edit_notes"
+                                    <?php checked( $user->has_cap( BRIEFNOTE_EDIT_NOTES_CAP ) ); ?>>
+                                <span class="briefnote-toggle-slider"></span>
+                            </label>
+                        </td>
+                        <td class="briefnote-cap-col">
+                            <label class="briefnote-toggle">
+                                <input type="checkbox" name="user_cap_credentials[]"
+                                    value="<?php echo esc_attr( $user->ID ); ?>"
+                                    data-user="<?php echo esc_attr( $user->ID ); ?>"
+                                    data-cap="credentials"
                                     <?php checked( $user->has_cap( BRIEFNOTE_CREDENTIALS_CAP ) ); ?>>
                                 <span class="briefnote-toggle-slider"></span>
                             </label>
-                        <?php endif; ?>
-                    </td>
+                        </td>
+                        <td class="briefnote-cap-col">
+                            <label class="briefnote-toggle">
+                                <input type="checkbox" name="user_cap_edit_credentials[]"
+                                    value="<?php echo esc_attr( $user->ID ); ?>"
+                                    data-user="<?php echo esc_attr( $user->ID ); ?>"
+                                    data-cap="edit_credentials"
+                                    <?php checked( $user->has_cap( BRIEFNOTE_EDIT_CREDENTIALS_CAP ) ); ?>>
+                                <span class="briefnote-toggle-slider"></span>
+                            </label>
+                        </td>
+                    <?php endif; ?>
                 </tr>
                 <?php endforeach; ?>
             </tbody>

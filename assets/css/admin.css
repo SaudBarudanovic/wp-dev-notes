@@ -140,10 +140,8 @@ body.briefnote-dark-mode #wpfooter {
     display: flex;
     align-items: center;
     gap: 12px;
-    font-size: 28px;
-    font-weight: 600;
-    margin: 0 0 24px;
-    padding: 0;
+    font-size: 28px !important;
+    margin: 0 0 24px !important;
     color: var(--sd-text-primary);
     letter-spacing: -0.5px;
 }
@@ -271,6 +269,7 @@ body.briefnote-dark-mode #wpfooter {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 61px;
     margin-bottom: 16px;
     padding-bottom: 16px;
     border-bottom: 1px solid var(--sd-border);
@@ -296,27 +295,33 @@ body.briefnote-dark-mode #wpfooter {
 .briefnote-save-indicator {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin-left: 8px;
+    vertical-align: middle;
 }
 
-.briefnote-save-indicator.saving {
-    background: var(--sd-warning-bg);
-    color: var(--sd-warning);
+.briefnote-save-indicator.saving::after {
+    content: '';
+    display: block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--sd-border-strong);
+    border-top-color: var(--sd-primary);
+    border-radius: 50%;
+    animation: briefnote-spin 0.6s linear infinite;
+}
+
+@keyframes briefnote-spin {
+    to { transform: rotate(360deg); }
 }
 
 .briefnote-save-indicator.saved {
-    background: var(--sd-success-bg);
     color: var(--sd-success);
 }
 
 .briefnote-save-indicator.error {
-    background: var(--sd-error-bg);
     color: var(--sd-error);
 }
 
@@ -354,6 +359,10 @@ body.briefnote-dark-mode #wpfooter {
     border-radius: var(--sd-radius);
     overflow: hidden;
     background: var(--sd-editor-bg);
+}
+
+#briefnote-editor.briefnote-viewer-mode {
+    padding: 0 16px;
 }
 
 .briefnote-dark #briefnote-editor {
@@ -470,7 +479,7 @@ body.briefnote-dark-mode #wpfooter {
 
 .toastui-editor-toolbar {
     background: var(--sd-bg-secondary) !important;
-    padding: 8px 6px 0 !important;
+    padding: 0px;
     height: auto;
 }
 
@@ -569,7 +578,7 @@ body.briefnote-dark-mode #wpfooter {
 .briefnote-dark .toastui-editor-toolbar-icons {
     background-color: transparent !important;
     border-color: transparent !important;
-    filter: brightness(0) invert(1) !important;
+    background-position-y: -49px !important;
 }
 
 .briefnote-dark .toastui-editor-toolbar-icons:hover {
@@ -691,14 +700,21 @@ body.briefnote-dark-mode #wpfooter {
 /* ========================================
    Credentials Section
    ======================================== */
-.briefnote-credentials-header {
+.briefnote-tab-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 44px;
     margin-bottom: 24px;
 }
 
-.briefnote-credentials-header h2 {
+.briefnote-tab-header button,
+.briefnote-tab-header select {
+    height: 44px;
+    box-sizing: border-box;
+}
+
+.briefnote-tab-header h2 {
     margin: 0;
     font-size: 20px;
     font-weight: 600;
@@ -966,9 +982,11 @@ body.briefnote-dark-mode #wpfooter {
     background: var(--sd-bg-primary);
     border-radius: var(--sd-radius-xl);
     width: 100%;
-    max-width: 520px;
-    max-height: 90vh;
-    overflow-y: auto;
+    max-width: 600px;
+    max-height: 95vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     box-shadow: var(--sd-shadow-lg);
     border: 1px solid var(--sd-border);
 }
@@ -984,7 +1002,7 @@ body.briefnote-dark-mode #wpfooter {
     padding: 20px 24px;
     border-bottom: 1px solid var(--sd-border);
     background: var(--sd-bg-secondary);
-    border-radius: var(--sd-radius-xl) var(--sd-radius-xl) 0 0;
+    flex-shrink: 0;
 }
 
 .briefnote-modal-header h3 {
@@ -1007,6 +1025,7 @@ body.briefnote-dark-mode #wpfooter {
     cursor: pointer;
     color: var(--sd-text-secondary);
     transition: all 0.2s ease;
+    padding: 4px 10px 8px
 }
 
 .briefnote-modal-close:hover {
@@ -1017,6 +1036,31 @@ body.briefnote-dark-mode #wpfooter {
 #briefnote-credential-form,
 #briefnote-password-form {
     padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+    scrollbar-width: thin;
+    scrollbar-color: var(--sd-border-strong) transparent;
+}
+
+#briefnote-credential-form::-webkit-scrollbar,
+#briefnote-password-form::-webkit-scrollbar {
+    width: 6px;
+}
+
+#briefnote-credential-form::-webkit-scrollbar-track,
+#briefnote-password-form::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#briefnote-credential-form::-webkit-scrollbar-thumb,
+#briefnote-password-form::-webkit-scrollbar-thumb {
+    background: var(--sd-border-strong);
+    border-radius: 3px;
+}
+
+#briefnote-credential-form::-webkit-scrollbar-thumb:hover,
+#briefnote-password-form::-webkit-scrollbar-thumb:hover {
+    background: var(--sd-text-muted);
 }
 
 .briefnote-form-row {
@@ -1065,6 +1109,7 @@ body.briefnote-dark-mode #wpfooter {
 
 .briefnote-form-row select {
     cursor: pointer;
+    max-width: 100%;
 }
 
 .briefnote-form-row textarea {
@@ -1122,8 +1167,7 @@ body.briefnote-dark-mode #wpfooter {
     padding: 20px 24px;
     border-top: 1px solid var(--sd-border);
     background: var(--sd-bg-secondary);
-    border-radius: 0 0 var(--sd-radius-xl) var(--sd-radius-xl);
-    margin-top: 24px;
+    margin: 24px -24px -24px;
 }
 
 .briefnote-modal-footer .button {
@@ -1157,6 +1201,16 @@ body.briefnote-dark-mode #wpfooter {
     color: var(--sd-text-primary) !important;
 }
 
+#briefnote-password-form p {
+    color: var(--sd-text-secondary);
+    margin: 0 0 16px;
+}
+
+.briefnote-modal-content select option {
+    background: var(--sd-bg-primary);
+    color: var(--sd-text-primary);
+}
+
 .briefnote-error {
     color: var(--sd-error);
     font-size: 13px;
@@ -1170,22 +1224,9 @@ body.briefnote-dark-mode #wpfooter {
 /* ========================================
    Activity Log
    ======================================== */
-.briefnote-activity-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-}
-
-.briefnote-activity-header h2 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--sd-text-primary);
-}
 
 .briefnote-activity-filters select {
-    padding: 10px 14px;
+    padding: 0 14px;
     border: 1px solid var(--sd-border);
     border-radius: var(--sd-radius);
     background: var(--sd-bg-primary);
@@ -1198,6 +1239,17 @@ body.briefnote-dark-mode #wpfooter {
     border-color: var(--sd-primary);
     outline: none;
     box-shadow: 0 0 0 3px var(--sd-primary-light);
+}
+
+.briefnote-dark .briefnote-activity-filters select {
+    background: #1e293b;
+    border-color: #334155;
+    color: #f1f5f9;
+}
+
+.briefnote-dark .briefnote-activity-filters select option {
+    background: #1e293b;
+    color: #f1f5f9;
 }
 
 .briefnote-activity-log {
@@ -1383,12 +1435,6 @@ body.briefnote-dark-mode #wpfooter {
 /* ========================================
    Settings
    ======================================== */
-.briefnote-settings h2 {
-    margin: 0 0 24px;
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--sd-text-primary);
-}
 
 .briefnote-settings h3 {
     margin: 32px 0 16px;
@@ -1464,6 +1510,8 @@ body.briefnote-dark-mode #wpfooter {
     margin-top: 24px;
     padding-top: 24px;
     border-top: 1px solid var(--sd-border);
+    display: flex;
+    align-items: center;
 }
 
 .briefnote-settings .submit .button-primary {
@@ -1583,6 +1631,34 @@ body.briefnote-dark-mode #wpfooter {
 #briefnote-user-access .description {
     color: var(--sd-text-muted);
     font-size: 12px;
+}
+
+.briefnote-role-col {
+    width: 150px;
+}
+
+.briefnote-cap-col {
+    width: 140px;
+    text-align: center !important;
+    white-space: nowrap;
+}
+
+.briefnote-readonly-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--sd-info-bg);
+    color: var(--sd-info);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.briefnote-readonly-badge .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
 }
 
 /* Dark mode settings overrides */
@@ -1786,7 +1862,7 @@ body.briefnote-dark-mode #wpfooter {
         min-height: 400px;
     }
 
-    .briefnote-credentials-header {
+    .briefnote-tab-header {
         flex-direction: column;
         gap: 16px;
         align-items: stretch;

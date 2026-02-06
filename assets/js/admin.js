@@ -24,10 +24,22 @@
         initActivityLog();
         initSettings();
         initModals();
-        initNotesTracking();
+        initCapabilityToggles();
 
-        // Log initial notes access (notes tab is default)
-        logNotesAccess();
+        // Only track unsaved changes for users who can edit
+        if (briefnoteAdmin.canEditNotes) {
+            initNotesTracking();
+        }
+
+        // Log initial access for the default visible tab
+        if (briefnoteAdmin.canViewNotes) {
+            logNotesAccess();
+        }
+
+        // Load credentials if that's the initially active tab
+        if ($('#tab-credentials').hasClass('active') && briefnoteAdmin.canViewCredentials) {
+            loadCredentials();
+        }
     }
 
     /**
@@ -54,7 +66,7 @@
 
             // Reinitialize editor for theme change
             if (editor) {
-                const content = editor.getMarkdown();
+                const content = editor.getMarkdown ? editor.getMarkdown() : briefnoteAdmin.content;
                 initEditor(content);
             }
         });
@@ -98,8 +110,23 @@
 
         const isDark = document.querySelector('.briefnote-wrap').classList.contains('briefnote-dark');
         const content = initialContent !== undefined ? initialContent : briefnoteAdmin.content;
+        const isReadOnly = !briefnoteAdmin.canEditNotes;
 
-        // Initialize Toast UI Editor
+        if (isReadOnly) {
+            container.classList.add('briefnote-viewer-mode');
+            // Use Toast UI Viewer for read-only users
+            editor = toastui.Editor.factory({
+                el: container,
+                viewer: true,
+                height: '600px',
+                initialValue: content,
+                theme: isDark ? 'dark' : 'light',
+                plugins: [toastui.Editor.plugin.codeSyntaxHighlight],
+            });
+            return;
+        }
+
+        // Full editor for users with edit access
         editor = new toastui.Editor({
             el: container,
             height: '600px',
@@ -150,7 +177,7 @@
      * Save notes via AJAX
      */
     function saveNotes(saveType) {
-        if (!editor) return;
+        if (!editor || !editor.getMarkdown) return;
 
         saveType = saveType || 'manual';
         const content = editor.getMarkdown();
@@ -285,11 +312,12 @@
             return;
         }
 
+        const canEdit = briefnoteAdmin.canEditCredentials || briefnoteAdmin.isAdmin;
         let html = '';
         credentials.forEach(function(cred) {
             const typeIcon = getTypeIcon(cred.type);
             html += `
-                <div class="briefnote-credential-card" data-id="${cred.id}" draggable="true">
+                <div class="briefnote-credential-card" data-id="${cred.id}" ${canEdit ? 'draggable="true"' : ''}>
                     <div class="briefnote-credential-info">
                         <div class="briefnote-credential-label">${escapeHtml(cred.label)}</div>
                         <div class="briefnote-credential-meta">
@@ -304,12 +332,12 @@
                         <button type="button" class="copy-btn" data-id="${cred.id}" title="Copy">
                             <span class="dashicons dashicons-clipboard"></span>
                         </button>
-                        <button type="button" class="edit-btn" data-id="${cred.id}" title="Edit">
+                        ${canEdit ? `<button type="button" class="edit-btn" data-id="${cred.id}" title="Edit">
                             <span class="dashicons dashicons-edit"></span>
                         </button>
                         <button type="button" class="delete delete-btn" data-id="${cred.id}" title="Delete">
                             <span class="dashicons dashicons-trash"></span>
-                        </button>
+                        </button>` : ''}
                     </div>
                     <div class="briefnote-credential-fields" id="fields-${cred.id}"></div>
                 </div>
@@ -335,8 +363,10 @@
             deleteCredential($(this).data('id'));
         });
 
-        // Initialize drag and drop
-        initDragAndDrop();
+        // Initialize drag and drop for users with edit access
+        if (canEdit) {
+            initDragAndDrop();
+        }
     }
 
     /**
@@ -574,28 +604,31 @@
                 success: function(response) {
                     if (response.success) {
                         const cred = response.data.credential;
-                        let valueToCopy = '';
+                        const lines = [];
 
-                        // Determine primary value based on type
+                        lines.push(cred.label);
+                        if (cred.url) lines.push('URL: ' + cred.url);
+
                         switch (cred.type) {
                             case 'username_password':
-                                valueToCopy = cred.password || cred.username;
+                                if (cred.username) lines.push('Username: ' + cred.username);
+                                if (cred.password) lines.push('Password: ' + cred.password);
                                 break;
                             case 'api_key':
-                                valueToCopy = cred.api_key;
+                                if (cred.api_key) lines.push('API Key: ' + cred.api_key);
                                 break;
                             case 'ssh_key':
-                                valueToCopy = cred.ssh_key;
+                                if (cred.ssh_key) lines.push('SSH Key:\n' + cred.ssh_key);
                                 break;
                             case 'secure_note':
-                                valueToCopy = cred.secure_note;
+                                if (cred.secure_note) lines.push('Secure Note:\n' + cred.secure_note);
                                 break;
                         }
 
-                        if (valueToCopy) {
-                            copyToClipboard(valueToCopy);
-                            logCopyAction(id, getPrimaryField(cred.type));
-                        }
+                        if (cred.notes) lines.push('Notes: ' + cred.notes);
+
+                        copyToClipboard(lines.join('\n'));
+                        logCopyAction(id, getPrimaryField(cred.type));
                     } else if (response.data.require_verification) {
                         pendingAction = function() { copyCredential(id); };
                         showPasswordModal();
@@ -902,10 +935,26 @@
      * Save settings
      */
     function saveSettings() {
-        const userAccess = [];
-        $('input[name="user_access[]"]:checked').each(function() {
-            userAccess.push($(this).val());
+        const capViewNotes = [];
+        const capEditNotes = [];
+        const capCredentials = [];
+        const capEditCredentials = [];
+
+        $('input[name="user_cap_view_notes[]"]:checked').each(function() {
+            capViewNotes.push($(this).val());
         });
+        $('input[name="user_cap_edit_notes[]"]:checked').each(function() {
+            capEditNotes.push($(this).val());
+        });
+        $('input[name="user_cap_credentials[]"]:checked').each(function() {
+            capCredentials.push($(this).val());
+        });
+        $('input[name="user_cap_edit_credentials[]"]:checked').each(function() {
+            capEditCredentials.push($(this).val());
+        });
+
+        var $status = $('#briefnote-settings-status');
+        $status.removeClass('saved error').addClass('saving').html('');
 
         $.ajax({
             url: briefnoteAdmin.ajaxUrl,
@@ -915,15 +964,59 @@
                 nonce: briefnoteAdmin.nonce,
                 require_password_verification: $('input[name="require_password_verification"]').is(':checked') ? 1 : 0,
                 audit_log_retention_days: $('input[name="audit_log_retention_days"]').val(),
-                user_access: userAccess
+                user_cap_view_notes: capViewNotes,
+                user_cap_edit_notes: capEditNotes,
+                user_cap_credentials: capCredentials,
+                user_cap_edit_credentials: capEditCredentials
             },
             success: function(response) {
                 if (response.success) {
-                    $('#briefnote-settings-status').addClass('saved').text(briefnoteAdmin.strings.saved);
-                    setTimeout(function() {
-                        $('#briefnote-settings-status').removeClass('saved').text('');
-                    }, 3000);
+                    $status.removeClass('saving').addClass('saved').html('<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 10l3.5 3.5L15 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+                } else {
+                    $status.removeClass('saving').addClass('error').html('<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6 6l8 8M14 6l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>');
                 }
+                setTimeout(function() {
+                    $status.removeClass('saved error').html('');
+                }, 3000);
+            },
+            error: function() {
+                $status.removeClass('saving').addClass('error').html('<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6 6l8 8M14 6l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>');
+                setTimeout(function() {
+                    $status.removeClass('error').html('');
+                }, 3000);
+            }
+        });
+    }
+
+    /**
+     * Initialize capability toggle interlock (edit implies view)
+     */
+    function initCapabilityToggles() {
+        // Edit implies View: toggling Edit ON auto-checks View
+        $(document).on('change', 'input[data-cap="edit_notes"]', function() {
+            if ($(this).is(':checked')) {
+                var userId = $(this).data('user');
+                $('input[data-cap="view_notes"][data-user="' + userId + '"]').prop('checked', true);
+            }
+        });
+        $(document).on('change', 'input[data-cap="edit_credentials"]', function() {
+            if ($(this).is(':checked')) {
+                var userId = $(this).data('user');
+                $('input[data-cap="credentials"][data-user="' + userId + '"]').prop('checked', true);
+            }
+        });
+
+        // Toggling View OFF auto-unchecks Edit
+        $(document).on('change', 'input[data-cap="view_notes"]', function() {
+            if (!$(this).is(':checked')) {
+                var userId = $(this).data('user');
+                $('input[data-cap="edit_notes"][data-user="' + userId + '"]').prop('checked', false);
+            }
+        });
+        $(document).on('change', 'input[data-cap="credentials"]', function() {
+            if (!$(this).is(':checked')) {
+                var userId = $(this).data('user');
+                $('input[data-cap="edit_credentials"][data-user="' + userId + '"]').prop('checked', false);
             }
         });
     }

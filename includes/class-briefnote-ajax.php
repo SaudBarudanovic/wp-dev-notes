@@ -116,7 +116,7 @@ class Briefnote_Ajax {
      * Save notes content
      */
     public function save_notes() {
-        if ( ! $this->verify_request( 'manage_options' ) ) {
+        if ( ! $this->verify_request( BRIEFNOTE_EDIT_NOTES_CAP ) ) {
             return;
         }
 
@@ -148,7 +148,7 @@ class Briefnote_Ajax {
      * Log notes access
      */
     public function log_notes_access() {
-        if ( ! $this->verify_request( 'manage_options' ) ) {
+        if ( ! $this->verify_request( BRIEFNOTE_VIEW_NOTES_CAP ) ) {
             return;
         }
 
@@ -160,7 +160,7 @@ class Briefnote_Ajax {
      * Log notes copy action
      */
     public function log_notes_copy() {
-        if ( ! $this->verify_request( 'manage_options' ) ) {
+        if ( ! $this->verify_request( BRIEFNOTE_VIEW_NOTES_CAP ) ) {
             return;
         }
 
@@ -181,7 +181,7 @@ class Briefnote_Ajax {
      * Log notes paste action
      */
     public function log_notes_paste() {
-        if ( ! $this->verify_request( 'manage_options' ) ) {
+        if ( ! $this->verify_request( BRIEFNOTE_EDIT_NOTES_CAP ) ) {
             return;
         }
 
@@ -265,7 +265,7 @@ class Briefnote_Ajax {
      * Save credential (create or update)
      */
     public function save_credential() {
-        if ( ! $this->verify_request( BRIEFNOTE_CREDENTIALS_CAP ) ) {
+        if ( ! $this->verify_request( BRIEFNOTE_EDIT_CREDENTIALS_CAP ) ) {
             return;
         }
 
@@ -323,7 +323,7 @@ class Briefnote_Ajax {
      * Delete credential
      */
     public function delete_credential() {
-        if ( ! $this->verify_request( BRIEFNOTE_CREDENTIALS_CAP ) ) {
+        if ( ! $this->verify_request( BRIEFNOTE_EDIT_CREDENTIALS_CAP ) ) {
             return;
         }
 
@@ -438,7 +438,7 @@ class Briefnote_Ajax {
      * Reorder credentials
      */
     public function reorder_credentials() {
-        if ( ! $this->verify_request( BRIEFNOTE_CREDENTIALS_CAP ) ) {
+        if ( ! $this->verify_request( BRIEFNOTE_EDIT_CREDENTIALS_CAP ) ) {
             return;
         }
 
@@ -499,8 +499,11 @@ class Briefnote_Ajax {
             'audit_log_retention_days'      => isset( $_POST['audit_log_retention_days'] ) ? intval( $_POST['audit_log_retention_days'] ) : 90,
         );
 
-        // Handle user access
-        $user_access = isset( $_POST['user_access'] ) ? array_map( 'intval', wp_unslash( $_POST['user_access'] ) ) : array();
+        // Handle user access capability arrays
+        $cap_view_notes   = isset( $_POST['user_cap_view_notes'] ) ? array_map( 'intval', wp_unslash( $_POST['user_cap_view_notes'] ) ) : array();
+        $cap_edit_notes   = isset( $_POST['user_cap_edit_notes'] ) ? array_map( 'intval', wp_unslash( $_POST['user_cap_edit_notes'] ) ) : array();
+        $cap_credentials  = isset( $_POST['user_cap_credentials'] ) ? array_map( 'intval', wp_unslash( $_POST['user_cap_credentials'] ) ) : array();
+        $cap_edit_creds   = isset( $_POST['user_cap_edit_credentials'] ) ? array_map( 'intval', wp_unslash( $_POST['user_cap_edit_credentials'] ) ) : array();
         // phpcs:enable WordPress.Security.NonceVerification.Missing
 
         // Get all non-admin users
@@ -510,10 +513,53 @@ class Briefnote_Ajax {
 
         foreach ( $users as $user ) {
             $user_obj = new WP_User( $user->ID );
-            if ( in_array( $user->ID, $user_access, true ) ) {
+
+            $has_view_notes = in_array( $user->ID, $cap_view_notes, true );
+            $has_edit_notes = in_array( $user->ID, $cap_edit_notes, true );
+            $has_creds      = in_array( $user->ID, $cap_credentials, true );
+            $has_edit_creds = in_array( $user->ID, $cap_edit_creds, true );
+
+            // Edit implies view
+            if ( $has_edit_notes ) {
+                $has_view_notes = true;
+            }
+            if ( $has_edit_creds ) {
+                $has_creds = true;
+            }
+
+            // View Notes
+            if ( $has_view_notes ) {
+                $user_obj->add_cap( BRIEFNOTE_VIEW_NOTES_CAP );
+            } else {
+                $user_obj->remove_cap( BRIEFNOTE_VIEW_NOTES_CAP );
+            }
+
+            // Edit Notes
+            if ( $has_edit_notes ) {
+                $user_obj->add_cap( BRIEFNOTE_EDIT_NOTES_CAP );
+            } else {
+                $user_obj->remove_cap( BRIEFNOTE_EDIT_NOTES_CAP );
+            }
+
+            // View Credentials
+            if ( $has_creds ) {
                 $user_obj->add_cap( BRIEFNOTE_CREDENTIALS_CAP );
             } else {
                 $user_obj->remove_cap( BRIEFNOTE_CREDENTIALS_CAP );
+            }
+
+            // Edit Credentials
+            if ( $has_edit_creds ) {
+                $user_obj->add_cap( BRIEFNOTE_EDIT_CREDENTIALS_CAP );
+            } else {
+                $user_obj->remove_cap( BRIEFNOTE_EDIT_CREDENTIALS_CAP );
+            }
+
+            // Meta capability: access_briefnote
+            if ( $has_view_notes || $has_creds ) {
+                $user_obj->add_cap( BRIEFNOTE_ACCESS_CAP );
+            } else {
+                $user_obj->remove_cap( BRIEFNOTE_ACCESS_CAP );
             }
         }
 

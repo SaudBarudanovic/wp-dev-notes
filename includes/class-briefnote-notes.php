@@ -101,11 +101,23 @@ class Briefnote_Notes {
     }
 
     /**
+     * Check if user can view notes (read-only or editable)
+     *
+     * @return bool
+     */
+    public static function current_user_can_view() {
+        return current_user_can( 'manage_options' )
+            || current_user_can( BRIEFNOTE_VIEW_NOTES_CAP )
+            || current_user_can( BRIEFNOTE_EDIT_NOTES_CAP );
+    }
+
+    /**
      * Check if user can edit notes
      *
      * @return bool
      */
     public static function current_user_can_edit() {
-        return current_user_can( 'manage_options' );
+        return current_user_can( 'manage_options' )
+            || current_user_can( BRIEFNOTE_EDIT_NOTES_CAP );
     }
 }

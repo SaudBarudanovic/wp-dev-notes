@@ -377,6 +377,18 @@ class Briefnote_Credentials {
      * @return bool
      */
     public static function current_user_can_view() {
-        return current_user_can( BRIEFNOTE_CREDENTIALS_CAP );
+        return current_user_can( 'manage_options' )
+            || current_user_can( BRIEFNOTE_CREDENTIALS_CAP )
+            || current_user_can( BRIEFNOTE_EDIT_CREDENTIALS_CAP );
+    }
+
+    /**
+     * Check if user can edit credentials (create, update, delete, reorder)
+     *
+     * @return bool
+     */
+    public static function current_user_can_edit() {
+        return current_user_can( 'manage_options' )
+            || current_user_can( BRIEFNOTE_EDIT_CREDENTIALS_CAP );
     }
 }
